@@ -1,11 +1,16 @@
 package giddeongarber
 
 import (
+	"github.com/gorilla/mux"
 	"net/http"
 	"os"
 )
 
-func Init() error {
-	http.Handle("/gg/", http.StripPrefix("/gg/", http.FileServer(http.Dir(os.ExpandEnv("$GOPATH/src/github.com/garbotron/giddeongarber.info")))))
+func Init(r *mux.Router) error {
+
+	fileServer := http.FileServer(http.Dir(os.ExpandEnv("$GOPATH/src/github.com/garbotron/giddeongarber.info")))
+
+	r.Handle("/{path:.*}", fileServer).Host("{subdomain:[a-z]*\\.?}giddeongarber.info")
+
 	return nil
 }
